@@ -1,0 +1,54 @@
+﻿@model VontobelAspCore.Models.Expense
+@{
+    ViewBag.Title = "ExpenseForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<br />
+@if (Model.Id == 0)
+{
+    <h2>New Expense</h2>
+}
+else
+{
+    <h2>Edit Expense</h2>
+}
+<br />
+
+@* HTML form for creating/updating an expense *@
+@* we need to replace the magic strings *@
+@using (Html.BeginForm("Save", "Expenses"))
+{
+    <div class="form-group">
+        @Html.LabelFor(x => x.Date)
+        @Html.TextBoxFor(x => x.Date, "{0:dd.MM.yyyy}", new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Date)
+    </div>
+    <br />
+    <div class="form-group">
+        @Html.LabelFor(x => x.Amount)
+        @Html.TextBoxFor(x => x.Amount, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Amount)
+    </div>
+    <br />
+    <div class="form-group">
+        @Html.LabelFor(x => x.Recipient)
+        @Html.TextBoxFor(x => x.Recipient, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Recipient)
+    </div>
+    <br />
+    <div class="form-group">
+        @Html.LabelFor(x => x.Currency)
+        @Html.DropDownListFor(m => m.Currency, Html.GetEnumSelectList(Model.Currency.GetType()), new { @class = "form-control" })
+    </div>
+    <br />
+    <div class="form-group">
+        @Html.LabelFor(x => x.Type)
+        @Html.DropDownListFor(m => m.Type, Html.GetEnumSelectList(Model.Type.GetType()), new { @class = "form-control" })
+    </div>
+    <br />
+    @Html.HiddenFor(x => x.Id)
+    @Html.AntiForgeryToken()
+    <button type="submit" class="btn btn-primary">Save Expense</button>
+}
+

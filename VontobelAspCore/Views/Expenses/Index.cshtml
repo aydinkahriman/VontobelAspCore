@@ -1,0 +1,69 @@
+﻿@model IEnumerable<VontobelAspCore.Models.Expense>
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Expenses</h2>
+<br />
+<br />
+@* we need to replace the magic strings *@
+@Html.ActionLink("Create new expense", "New", "Expenses")
+@if (!Model.Any())
+{
+    <h4>No Expenses</h4>
+}
+else
+{
+    <br />
+    <br />
+    <table id="expenses" class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Recipient</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Type</th>
+                <th>Edit</th>
+                <th>Delete</th>
+                <th>Delete (AJAX)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model)
+            {
+            <tr>
+                <td>@e.Date.ToString("dd.MM.yyyy")</td>
+                <td>@e.Recipient</td>
+                <td>@e.Amount</td>
+                <td>@e.Currency</td>
+                <td>@e.Type</td>
+                <td>@Html.ActionLink("Edit", "Edit", "Expenses", new { id = e.Id }, null)</td>
+                <td>@Html.ActionLink("Delete", "Delete", "Expenses", new { id = e.Id }, null)</td>
+                <td>
+                    <button data-expense-id="@e.Id" class="btn-link js-delete">Delete</button>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#expenses .js-delete").on("click", function () {
+                var btn = $(this);
+                $.ajax({
+                    url: "api/expenses/" + $(this).attr("data-expense-id"),
+                    method: "DELETE",
+                    success: function () {
+                        btn.parents("tr").remove();
+                    }
+                });
+            });
+        });
+    </script>
+}
